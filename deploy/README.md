@@ -1,312 +1,107 @@
-# Whodaleader — Raspberry Pi 5 Deployment
+# Deploying whodaleader on a Raspberry Pi kiosk
 
-Step-by-step from a fresh Pi OS Bookworm installation to a live kiosk on the wall.
-Commands are run on the Pi unless stated otherwise.
+From a fresh Raspberry Pi OS Bookworm install to a live board on the wall.
+Commands run on the Pi unless noted.
 
----
+## ⚠️ Read this first — three things that will bite you
 
-## Prerequisites
+**1. Replace `pi` with YOUR username.** This guide uses `pi` and `/home/pi/...`.
+Bookworm makes you create your own username during imaging, so yours may differ
+(e.g. `admin`). Substitute it in every command AND in
+`deploy/whodaleader.service` (`User=`, `WorkingDirectory=`, `EnvironmentFile=`).
+A service pointing at a non-existent user fails with `status=217/USER` in a
+restart loop. Run `whoami` to check your username.
 
-- Raspberry Pi 5 (4 GB or 8 GB RAM)
-- Pi OS Bookworm (64-bit, Desktop image — needed for Wayland/Chromium kiosk)
-- HDMI TV or monitor connected
-- Internet access for initial setup; the board runs fully offline once deployed
+**2. Always run the server via systemd, never a bare `node` command.** A bare
+`node .output/server/index.mjs` does NOT load `.env`, so `HUBSPOT_TOKEN` is
+unset and every poll fails with "HUBSPOT_TOKEN is not set in environment". Only
+systemd (via `EnvironmentFile=`) loads it. After any rebuild:
+`sudo systemctl restart whodaleader`.
 
----
+**3. Put `DB_PATH` OUTSIDE the app directory** (e.g. `/home/pi/whodaleader-data/`),
+so redeploys never wipe your saved dashboards and trend history.
 
-## 1 — Install Node.js
+## 1. Install Node 20
 
-Pi OS ships with an older Node. Install v20 LTS via NodeSource:
+    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    sudo apt install -y nodejs build-essential python3
+    node -v    # confirm v20.x
 
-```bash
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt-get install -y nodejs
-node --version   # should print v20.x.x
-```
+(build-essential + python3 are needed to compile better-sqlite3.)
 
----
+## 2. Get the code
 
-## 2 — Clone the repo
+    git clone https://github.com/YOURNAME/YOURREPO.git ~/whodaleader
+    cd ~/whodaleader
 
-```bash
-cd /home/pi
-git clone https://github.com/ohlordylord224/Whodaleader.git whodaleader
-cd whodaleader
-```
+## 3. Configure
 
----
+    cp .env.example .env
+    cp config/leaderboard.example.ts config/leaderboard.ts
+    nano .env                      # add your HubSpot token, timezone, DB_PATH
+    nano config/leaderboard.ts     # add your team/owner/disposition IDs
 
-## 3 — Install dependencies
+Set `DB_PATH` in `.env` to an absolute path outside the repo, e.g.
+`DB_PATH=/home/pi/whodaleader-data/whodaleader.db`, then:
 
-```bash
-npm ci
-```
+    mkdir -p ~/whodaleader-data
 
-`better-sqlite3` compiles a native addon — this may take a minute on the Pi.
+## 4. Build
 
----
+    npm ci
+    npm run build
 
-## 4 — Create .env
+## 5. Install the systemd service
 
-```bash
-cp .env.example .env   # if one exists, otherwise create from scratch
-nano .env
-```
+    # fix the username first if you are not 'pi':
+    sudo sed -i 's|/home/pi/|/home/YOURUSER/|g; s|^User=pi|User=YOURUSER|' \
+      deploy/whodaleader.service
 
-Minimum required content:
+    sudo cp deploy/whodaleader.service /etc/systemd/system/
+    sudo systemctl daemon-reload
+    sudo systemctl enable whodaleader
+    sudo systemctl start whodaleader
+    systemctl status whodaleader --no-pager | head -5
 
-```
-# HubSpot Private App token (read-only scopes: crm.objects.contacts.read,
-# crm.objects.deals.read, crm.objects.owners.read, crm.schemas.deals.read)
-HUBSPOT_TOKEN=pat-na1-xxxx
+You want `Active: active (running)`. If it shows `activating (auto-restart)`,
+check `journalctl -u whodaleader -n 30` — usually a wrong path or username in
+the service file.
 
-# Where SQLite stores snapshot history + settings. MUST be a persistent path
-# that survives reboots — not /tmp or a relative path inside the app dir.
-DB_PATH=/home/pi/whodaleader/data/board.db
+Confirm it serves:
 
-# Which network address to bind on.
-#   0.0.0.0  — reachable from any device on the LAN (default; recommended for
-#               kiosks where the settings panel or a second screen may be used)
-#   127.0.0.1 — kiosk-only; nothing outside the Pi can browse the board
-BIND_HOST=0.0.0.0
+    curl -sI http://localhost:3000 | head -1     # want HTTP/1.1 200
 
-# Port (default 3000)
-PORT=3000
+## 6. Kiosk browser (Wayland / labwc on Bookworm)
 
-# Period: month | week | quarter (default: month)
-LEADERBOARD_PERIOD=month
+Point Chromium at the board on boot. In your labwc autostart
+(`~/.config/labwc/autostart`) or a launch script, use:
 
-# IANA timezone for period boundaries
-ACCOUNT_TIMEZONE=Europe/London
-```
+    # wait for the server before launching, so you never hit "can't be reached"
+    until curl -s http://localhost:3000 >/dev/null 2>&1; do sleep 2; done
+    chromium --kiosk --ozone-platform=wayland --password-store=basic \
+      --noerrdialogs --disable-infobars http://localhost:3000
 
-Restrict file permissions so the token is not world-readable:
+Notes for Bookworm:
+- `--ozone-platform=wayland` is required.
+- `xset`/`DISPLAY=:0`/`XAUTHORITY` are X11-only; don't use them under Wayland.
+- To disable screen blanking, use `raspi-config` (Display Options) or a
+  Wayland-native method — not `xset`.
+- The `curl` wait-loop matters: the browser launching before the server is
+  ready is the #1 cause of a blank "site can't be reached" board on boot.
 
-```bash
-chmod 600 .env
-mkdir -p data   # create the DB directory before first boot
-```
+## 7. Verify end to end
 
-> **Security note:** `BIND_HOST=0.0.0.0` means anyone on the office network can
-> browse to `http://pi-ip:3000` and see the leaderboard. This is intentional —
-> it lets a laptop open the settings panel — but if sales figures should be
-> visible only on the TV, set `BIND_HOST=127.0.0.1`.
+Reboot and confirm the board comes up on its own with live data:
 
----
-
-## 5 — Build
-
-```bash
-npm run build
-```
-
-Output lands in `.output/`. The production server is:
-
-```bash
-node .output/server/index.mjs
-```
-
-(The systemd service runs this automatically; you don't need to run it manually.)
-
----
-
-## 6 — Install the systemd service
-
-```bash
-sudo cp deploy/whodaleader.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable whodaleader
-sudo systemctl start whodaleader
-```
-
-Check it started cleanly:
-
-```bash
-sudo systemctl status whodaleader
-journalctl -u whodaleader -f   # live log stream
-```
-
-The service:
-- Starts automatically on boot (after network is online)
-- Restarts itself within 5 s on any crash
-- Reads all secrets from `/home/pi/whodaleader/.env` (never the service file)
-- Passes `NITRO_HOST` derived from your `BIND_HOST` setting
-
----
-
-## 7 — Chromium kiosk autostart (Wayland / labwc, Pi OS Bookworm)
-
-Pi OS Bookworm uses Wayland with the labwc compositor by default. The autostart
-mechanism is a plain text file that labwc runs on login.
-
-```bash
-mkdir -p ~/.config/labwc
-nano ~/.config/labwc/autostart
-```
-
-Add these lines:
-
-```bash
-# Disable screen blanking via wlr-randr (Wayland method)
-wlr-randr --output HDMI-A-1 --on &
-
-# Wait for the Whosdaleader server to be ready before opening the browser
-sleep 8
-
-# Launch Chromium in kiosk mode
-chromium-browser \
-  --kiosk \
-  --noerrdialogs \
-  --disable-infobars \
-  --disable-session-crashed-bubble \
-  --disable-features=TranslateUI \
-  --check-for-update-interval=31536000 \
-  "http://localhost:3000" &
-
-# X11 / wayfire fallback (uncomment if using X11 instead of Wayland):
-# DISPLAY=:0 chromium-browser --kiosk --noerrdialogs --disable-infobars \
-#   --check-for-update-interval=31536000 "http://localhost:3000" &
-```
-
-Save and close. On next login (or reboot), Chromium opens automatically in
-kiosk mode. There is no title bar, address bar, or way to exit without a
-keyboard shortcut (`Alt+F4` or `Ctrl+W` still work — acceptable for a staff
-environment).
-
----
-
-## 8 — Disable screen blanking / DPMS
-
-The TV must stay lit. Wayland/wlr compositors respond to `wlr-randr`; also
-disable the DPMS timeout via the compositor config.
-
-Install `wlr-randr` if not present:
-
-```bash
-sudo apt-get install -y wlr-randr
-```
-
-Add to labwc config to suppress idle-blanking:
-
-```bash
-mkdir -p ~/.config/labwc
-cat >> ~/.config/labwc/rc.xml << 'EOF'
-<!-- Disable idle/dpms blanking -->
-<idle>
-  <screenBlank>no</screenBlank>
-</idle>
-EOF
-```
-
-For belt-and-suspenders, also add to `/etc/X11/xorg.conf.d/10-dpms.conf`
-(catches any X11 fallback path):
-
-```bash
-sudo mkdir -p /etc/X11/xorg.conf.d
-sudo tee /etc/X11/xorg.conf.d/10-dpms.conf << 'EOF'
-Section "ServerFlags"
-  Option "BlankTime"  "0"
-  Option "StandbyTime" "0"
-  Option "SuspendTime" "0"
-  Option "OffTime"    "0"
-EndSection
-EOF
-```
-
----
-
-## 9 — Nightly browser restart (prevents Chromium memory leak)
-
-Chromium accumulates memory over days/weeks of continuous uptime. A nightly
-restart at 04:00 keeps it clean. The browser restarts automatically via the
-labwc autostart mechanism.
-
-Install the systemd timer units:
-
-```bash
-sudo cp deploy/whodaleader-browser-restart.service /etc/systemd/system/
-sudo cp deploy/whodaleader-browser-restart.timer    /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable --now whodaleader-browser-restart.timer
-```
-
-Verify the timer is scheduled:
-
-```bash
-systemctl list-timers whodaleader-browser-restart
-```
-
-The timer fires at 04:00 every night, kills Chromium (`pkill -f chromium.*kiosk`),
-and labwc's autostart script brings it back within seconds (the `sleep 8` in
-autostart accounts for server startup; after the nightly restart the server is
-already up so the browser reconnects immediately).
-
----
-
-## 10 — Enable auto-login (so the kiosk starts without a keyboard)
-
-Pi OS Bookworm: open **Raspberry Pi Configuration** → **System** → set
-**Auto login** to your pi user. Or via `raspi-config`:
-
-```bash
-sudo raspi-config
-# 1 System Options → S5 Boot / Auto Login → B4 Desktop Autologin
-```
-
----
-
-## 11 — Reboot and verify
-
-```bash
-sudo reboot
-```
-
-After reboot (~30 s):
-- The Node server starts automatically (systemd)
-- labwc compositor starts (auto-login)
-- Chromium opens in kiosk mode at `http://localhost:3000`
-- The board appears within ~10 s (first HubSpot poll)
-
-**Verify the server is running:**
-
-```bash
-sudo systemctl status whodaleader
-journalctl -u whodaleader --since "5 minutes ago"
-```
-
-**Verify the board is reachable from a laptop on the same network:**
-
-```
-http://<pi-ip-address>:3000
-```
-
-(only if `BIND_HOST=0.0.0.0`)
-
----
-
-## Updating the board
-
-```bash
-cd /home/pi/whodaleader
-git pull
-npm ci
-npm run build
-sudo systemctl restart whodaleader
-```
-
-The browser will reconnect via SSE within 30 s and show the new version
-without a manual refresh.
-
----
+    sudo reboot
 
 ## Troubleshooting
 
-| Symptom | Check |
-|---|---|
-| Server not starting | `journalctl -u whodaleader -n 50` |
-| HubSpot auth failure | Check `HUBSPOT_TOKEN` in `.env`; confirm token has correct scopes |
-| Fonts wrong / fallback | Check `/home/pi/whodaleader/public/fonts/` exists after build |
-| Chromium not opening | Check `~/.config/labwc/autostart` is executable; run `chmod +x ~/.config/labwc/autostart` |
-| Screen goes blank | Verify `wlr-randr` is installed; check `rc.xml` idle config |
-| Board shows stale chip | Server running but no HubSpot response — check network; `journalctl -u whodaleader -f` |
-| DB errors on startup | Check `DB_PATH` directory exists and is writable by the pi user |
+| Symptom | Cause | Fix |
+|---|---|---|
+| `status=217/USER`, restart loop | service `User=` is a non-existent user | sed the service file to your username |
+| "HUBSPOT_TOKEN is not set" | started with bare `node`, not systemd | use `sudo systemctl start whodaleader` |
+| "Failed to load environment files" | `EnvironmentFile=` path wrong | point it at your real `.env` |
+| Board "Reconnecting" | poll failing | `journalctl -u whodaleader`; check token/network/clock |
+| "site can't be reached" on boot | browser launched before server ready | add the curl wait-loop before chromium |
+| Dashboards reset after redeploy | DB was inside the app dir | move DB_PATH outside the repo |
