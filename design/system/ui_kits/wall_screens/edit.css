@@ -1,0 +1,184 @@
+/* ============================================================
+   WHOSDALEADER — CONFIG LAYER (edit-mode chrome)
+   Two scales in one file:
+   1) NATIVE-RES CHROME — rendered into #chrome, position:fixed
+      OVER the scaled canvas, per the system's floating-dock
+      pattern: translucent Ink + backdrop blur 14px. Laptop /
+      phone scale (controls stay crisp at any canvas scale).
+   2) CANVAS-SCALE pieces — the "+ Add widget" slot and the
+      frozen reflow frame, which live inside the 1920×1080 grid.
+   Existing tokens only. No new tokens introduced.
+   ============================================================ */
+
+/* ================= 1. NATIVE-RES CHROME ================= */
+#chrome { position: fixed; inset: 0; z-index: 50; pointer-events: none;
+          font-family: var(--font-body); color: var(--text-body); }
+#chrome * { box-sizing: border-box; }
+
+/* Shared translucent-ink surface (the dock pattern) */
+.inkchip {
+  background: color-mix(in srgb, var(--surface-overlay) 80%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---- "Editing" indicator — header, quiet ---- */
+.editing { position: fixed; display: inline-flex; align-items: center; gap: 8px;
+           padding: 8px 16px; border-radius: var(--radius-pill);
+           font-size: 13px; font-weight: var(--weight-semibold); color: var(--text-body);
+           white-space: nowrap; }
+.editing__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--brand); flex: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .editing__dot { animation: edit-pulse 1.6s var(--ease-in-out) infinite; }
+}
+@keyframes edit-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+/* ---- Gear chip — top-right corner of each module ---- */
+.gearchip { position: fixed; width: 40px; height: 40px; border-radius: var(--radius-md);
+            display: grid; place-items: center; padding: 0; color: var(--text-muted);
+            cursor: pointer; pointer-events: auto;
+            transition: color var(--dur-fast) var(--ease-out),
+                        transform var(--dur-fast) var(--ease-out),
+                        box-shadow var(--dur-fast) var(--ease-out); }
+.gearchip::before { content: ''; position: absolute; inset: -4px; } /* 48px hit area */
+.gearchip:hover { color: var(--text-strong); transform: translateY(-1px); }
+.gearchip:active { transform: scale(0.93); }
+.gearchip:focus-visible { outline: none; box-shadow: var(--ring); }
+.gearchip--active { color: var(--brand-bright);
+                    border-color: color-mix(in srgb, var(--brand) 55%, transparent);
+                    box-shadow: var(--ring); }
+
+/* ---- The bench — slim shelf along the bottom edge ---- */
+.bench { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%);
+         display: flex; align-items: center; gap: 14px;
+         padding: 10px 12px 10px 20px; border-radius: var(--radius-pill);
+         box-shadow: var(--shadow-overlay); pointer-events: auto;
+         max-width: calc(100vw - 32px); }
+.bench__lbl { font-size: 11px; font-weight: var(--weight-bold);
+              letter-spacing: var(--tracking-caps); text-transform: uppercase;
+              color: var(--text-faint); }
+.bench__div { width: 1px; height: 22px; background: var(--border-default); flex: none; }
+.bench__chips { display: flex; align-items: center; gap: 8px; }
+.bench__chip { display: inline-flex; align-items: center; gap: 8px; height: 36px;
+               padding: 0 16px; border-radius: var(--radius-pill);
+               background: var(--surface-card-hi); border: 1px solid var(--border-subtle);
+               color: var(--text-body); font-family: var(--font-body);
+               font-size: 13px; font-weight: var(--weight-semibold);
+               cursor: pointer; white-space: nowrap;
+               transition: border-color var(--dur-fast) var(--ease-out),
+                           transform var(--dur-fast) var(--ease-out); }
+.bench__chip:hover { border-color: var(--brand); transform: translateY(-1px); }
+.bench__chip:active { transform: scale(0.97); }
+.bench__chip[disabled] { opacity: 0.45; cursor: not-allowed; }
+.bench__chip[disabled]:hover { border-color: var(--border-subtle); transform: none; }
+.bench__why { font-size: 11px; font-weight: var(--weight-semibold); color: var(--text-faint); }
+
+/* ---- The gear popover ---- */
+.pop { position: fixed; width: 344px; max-height: calc(100vh - 96px); overflow-y: auto;
+       padding: 20px; border-radius: var(--radius-lg);
+       background: color-mix(in srgb, var(--surface-card) 92%, transparent);
+       -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+       border: 1px solid var(--border-default); box-shadow: var(--shadow-overlay);
+       pointer-events: auto; }
+.pop__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pop__title { margin: 0; font-family: var(--font-display); font-weight: var(--weight-black);
+              font-size: 17px; letter-spacing: var(--tracking-tight);
+              line-height: var(--leading-tight); color: var(--text-strong); }
+.pop__x { width: 28px; height: 28px; border-radius: var(--radius-sm);
+          display: grid; place-items: center; padding: 0; border: none;
+          background: transparent; color: var(--text-muted); cursor: pointer;
+          transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
+.pop__x:hover { background: var(--surface-card-hi); color: var(--text-strong); }
+.pop__sec { margin-top: 16px; }
+.pop__lbl { display: block; font-size: 11px; font-weight: var(--weight-bold);
+            letter-spacing: var(--tracking-caps); text-transform: uppercase;
+            color: var(--text-muted); margin-bottom: 8px; }
+
+/* Size — segmented control with footprint pictograms */
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px;
+       border-radius: var(--radius-md); border: 1px solid var(--border-subtle);
+       background: color-mix(in srgb, var(--surface-inset) 70%, transparent); }
+.seg__opt { display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+            height: 36px; border-radius: var(--radius-sm); border: none;
+            background: transparent; color: var(--text-muted);
+            font-family: var(--font-body); font-size: 12.5px; font-weight: var(--weight-semibold);
+            cursor: pointer;
+            transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
+.seg__opt:hover { background: var(--surface-card-hi); color: var(--text-body); }
+.seg__opt--on, .seg__opt--on:hover { background: var(--brand-soft); color: var(--brand-bright);
+       box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 45%, transparent); }
+
+/* Type — 5 icon + label options */
+.typegrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.typegrid__opt { display: flex; flex-direction: column; align-items: center; gap: 6px;
+                 padding: 10px 2px 9px; border-radius: var(--radius-sm);
+                 border: 1px solid var(--border-subtle); background: transparent;
+                 color: var(--text-muted); font-family: var(--font-body);
+                 font-size: 11px; font-weight: var(--weight-medium); cursor: pointer;
+                 transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
+.typegrid__opt:hover { background: var(--surface-card-hi); color: var(--text-body); }
+.typegrid__opt--on, .typegrid__opt--on:hover { background: var(--brand-soft); color: var(--brand-bright);
+                 border-color: transparent;
+                 box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 45%, transparent); }
+
+/* Data — two compact selects */
+.pop__row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pop__selwrap { position: relative; }
+.pop__select { appearance: none; -webkit-appearance: none; width: 100%; height: 38px;
+               padding: 0 32px 0 12px; border-radius: var(--radius-sm);
+               background: var(--surface-card-hi); border: 1px solid var(--border-default);
+               color: var(--text-strong); font-family: var(--font-body);
+               font-size: 13px; font-weight: var(--weight-semibold); cursor: pointer; }
+.pop__select:focus-visible { outline: none; box-shadow: var(--ring); }
+.pop__chev { position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+             display: grid; color: var(--text-muted); pointer-events: none; }
+
+/* Celebrate toggle row */
+.pop__toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pop__toggletxt { font-size: 13px; font-weight: var(--weight-semibold); color: var(--text-body); white-space: nowrap; }
+
+/* Title override */
+.pop__input { width: 100%; height: 38px; padding: 0 12px; border-radius: var(--radius-sm);
+              background: var(--surface-card-hi); border: 1px solid var(--border-default);
+              color: var(--text-strong); font-family: var(--font-body);
+              font-size: 13px; font-weight: var(--weight-semibold); }
+.pop__input::placeholder { color: var(--text-faint); font-weight: var(--weight-medium); }
+.pop__input:focus-visible { outline: none; box-shadow: var(--ring); }
+
+/* Footer action */
+.pop__foot { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-subtle); }
+
+/* ================= 2. CANVAS-SCALE PIECES ================= */
+
+/* "+ Add widget" placeholder slot — quiet, dashed, edit-mode only */
+.cell.slot { background: transparent; border: 2px dashed var(--border-default);
+             box-shadow: none; align-items: stretch; }
+.slot__inner { flex: 1; display: flex; flex-direction: column; align-items: center;
+               justify-content: center; gap: 10px; color: var(--text-faint);
+               font-weight: var(--weight-semibold); font-size: 26px; }
+.slot__plus { font-family: var(--font-display); font-weight: var(--weight-black);
+              font-size: 44px; line-height: 1; }
+.slot--active { border-color: color-mix(in srgb, var(--brand) 50%, transparent); }
+.slot--active .slot__inner { color: var(--text-muted); }
+
+/* Frozen reflow frame — animations defined with the system's
+   --dur-base / --ease-out, paused mid-flight via negative delay */
+.reflow-col { grid-row: span 2; position: relative; min-height: 0; min-width: 0; }
+.reflow-col > .cell { position: absolute; left: 0; right: 0; }
+.cell--growing { top: 0; height: calc(50% - 14px);
+                 animation: cfg-grow var(--dur-base) var(--ease-out) both;
+                 animation-play-state: paused;
+                 animation-delay: calc(var(--dur-base) * -0.35); }
+@keyframes cfg-grow { to { height: 100%; } }
+.cell--tobench { top: calc(50% + 14px); height: calc(50% - 14px);
+                 animation: cfg-tobench var(--dur-base) var(--ease-out) both;
+                 animation-play-state: paused;
+                 animation-delay: calc(var(--dur-base) * -0.35); }
+@keyframes cfg-tobench { to { transform: translateY(42%) scale(0.93); opacity: 0.15; } }
+
+/* Bench chip materialising as its module arrives (same frozen frame) */
+.bench__chip--incoming { animation: cfg-chipin var(--dur-base) var(--ease-out) both;
+                         animation-play-state: paused;
+                         animation-delay: calc(var(--dur-base) * -0.35); }
+@keyframes cfg-chipin { from { opacity: 0; transform: translateY(10px) scale(0.92); } }

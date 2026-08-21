@@ -1,0 +1,48 @@
+/* ============================================================
+   WHOSDALEADER — EFFECTS
+   Friendly = rounded. Candy = glow. Cards sit on soft dark
+   shadows; accents get colored glows when something pops
+   (a new leader, a streak, a celebratory state).
+   ============================================================ */
+
+:root {
+  /* ---- Corner radii (rounded, candy) ---- */
+  --radius-xs:   6px;
+  --radius-sm:   10px;
+  --radius-md:   14px;
+  --radius-lg:   20px;
+  --radius-xl:   26px;
+  --radius-2xl:  34px;
+  --radius-pill: 999px;
+
+  /* ---- Elevation shadows (tuned for dark surfaces) ---- */
+  --shadow-xs:   0 1px 2px rgba(8, 5, 18, 0.4);
+  --shadow-sm:   0 2px 8px rgba(8, 5, 18, 0.45);
+  --shadow-card: 0 10px 30px -12px rgba(8, 5, 18, 0.65);
+  --shadow-pop:  0 24px 60px -20px rgba(8, 5, 18, 0.78);
+  --shadow-overlay: 0 40px 100px -30px rgba(4, 2, 12, 0.85);
+
+  /* ---- Colored glows (use sparingly, for emphasis) ---- */
+  --glow-brand: 0 0 0 1px color-mix(in srgb, var(--azure-500) 50%, transparent),
+                0 8px 30px -6px color-mix(in srgb, var(--azure-500) 55%, transparent);
+  --glow-up:    0 0 0 1px color-mix(in srgb, var(--mint-500) 50%, transparent),
+                0 8px 30px -6px color-mix(in srgb, var(--mint-500) 50%, transparent);
+  --glow-down:  0 0 0 1px color-mix(in srgb, var(--coral-500) 50%, transparent),
+                0 8px 30px -6px color-mix(in srgb, var(--coral-500) 50%, transparent);
+  --glow-gold:  0 0 0 1px color-mix(in srgb, var(--gold-400) 60%, transparent),
+                0 8px 36px -6px color-mix(in srgb, var(--gold-400) 60%, transparent);
+
+  /* ---- Focus ring ---- */
+  --ring: 0 0 0 3px color-mix(in srgb, var(--focus-ring) 45%, transparent);
+
+  /* ---- Motion ---- */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);   /* @kind other */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* @kind other */ /* candy bounce */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);   /* @kind other */
+  --dur-fast:   120ms;  /* @kind other */
+  --dur-base:   220ms;  /* @kind other */
+  --dur-slow:   420ms;  /* @kind other */
+
+  /* ---- Layout decoration ---- */
+  --grain-opacity: 0.04;  /* @kind other */
+}

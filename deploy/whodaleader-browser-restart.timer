@@ -1,0 +1,10 @@
+[Unit]
+Description=Nightly Whosdaleader browser restart (Chromium leaks over days)
+
+[Timer]
+# Restart at 04:00 every night. The board is typically unattended at this hour.
+OnCalendar=*-*-* 04:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

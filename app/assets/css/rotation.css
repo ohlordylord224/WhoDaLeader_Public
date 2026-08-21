@@ -1,0 +1,90 @@
+/* ── Rotation bar ────────────────────────────────────────────────────────────
+   Positioned within the 1920×1080 canvas; sizes are in canvas-units.
+   Shown in display mode only (hidden by Shell when editMode is true).
+   Fades to near-invisible at rest; full opacity on hover or when paused.     */
+
+.rotation-bar {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 22px;
+  border-radius: 48px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  opacity: 0.35;
+  transition: opacity 0.3s ease;
+  pointer-events: auto;
+  user-select: none;
+  z-index: 10;
+}
+
+.rotation-bar:hover,
+.rotation-bar--paused {
+  opacity: 1;
+}
+
+/* ── Dots ─────────────────────────────────────────────────────────────────── */
+
+.rotation-dots {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.rotation-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: var(--text-faint);
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.rotation-dot:hover {
+  background: var(--text-muted);
+  transform: scale(1.2);
+}
+
+.rotation-dot--active {
+  background: var(--brand-bright);
+  transform: scale(1.6);
+  pointer-events: none;   /* active dot is not a navigation target */
+}
+
+/* ── Prev / next / pause buttons ─────────────────────────────────────────── */
+
+.rotation-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 30px;
+  font-family: var(--font-body);
+  line-height: 1;
+  padding: 0 2px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.rotation-btn:hover {
+  color: var(--text-strong);
+}
+
+.rotation-btn--pause {
+  font-size: 22px;
+  margin-left: 2px;
+}
+
+/* ── Reduced-motion: disable dot scale transitions ───────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .rotation-dot,
+  .rotation-bar {
+    transition: none;
+  }
+}

@@ -1,0 +1,15 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Whosdaleader">
+  <defs>
+    <linearGradient id="wdl-azure" x1="6" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#46b1ff"></stop>
+      <stop offset="1" stop-color="#1f6fe0"></stop>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="17" fill="url(#wdl-azure)"></rect>
+  
+  <path d="M22 27 L22 18.5 L27 22 L32 15.5 L37 22 L42 18.5 L42 27 Z" fill="#ffc93d" stroke="#ffc93d" stroke-width="1.6" stroke-linejoin="round"></path>
+  
+  <rect x="13" y="38" width="11" height="14" rx="2.5" fill="#cdd6e8"></rect>
+  <rect x="26.5" y="30" width="11" height="22" rx="2.5" fill="#ffc93d"></rect>
+  <rect x="40" y="42" width="11" height="10" rx="2.5" fill="#f0945a"></rect>
+</svg>

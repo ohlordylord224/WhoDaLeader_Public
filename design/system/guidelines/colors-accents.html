@@ -1,0 +1,22 @@
+<!-- @dsCard group="Colors" viewport="700x180" name="Accents — sky / teal / tango" subtitle="Secondary accents for charts & tags" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin:0; background:var(--surface-app); font-family:var(--font-body);
+         padding:24px 30px; display:flex; gap:14px; }
+  .sw { flex:1; border-radius:var(--radius-lg); height:130px; display:flex; flex-direction:column; justify-content:space-between;
+        padding:16px 18px; color:#08213d; }
+  .sky{ background:var(--sky-400);} .teal{ background:var(--teal-400);} .tango{ background:var(--tango-400);}
+  .name{ font-family:var(--font-display); font-weight:800; font-size:19px; }
+  .tok{ font-family:var(--font-numeric); font-size:11px; font-weight:600; opacity:.78; }
+</style>
+</head>
+<body>
+  <div class="sw sky"><span class="name">Sky</span><span class="tok">--sky-400 · #46b1ff · info</span></div>
+  <div class="sw teal"><span class="name">Teal</span><span class="tok">--teal-400 · #2dd4cf</span></div>
+  <div class="sw tango"><span class="name">Tango</span><span class="tok">--tango-400 · #ff9f45 · streaks</span></div>
+</body>
+</html>

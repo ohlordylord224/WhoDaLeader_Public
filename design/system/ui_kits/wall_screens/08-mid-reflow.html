@@ -1,0 +1,69 @@
+<!-- @dsCard group="Config layer" viewport="1920x1080" name="Mid-reflow" subtitle="Spotlight growing to half, ticker sliding to the bench — frozen mid-transition" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Whosdaleader — Mid-reflow</title>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="wall.css">
+<link rel="stylesheet" href="edit.css">
+</head>
+<body>
+  <div id="stage"><div id="canvas"><div id="root"></div></div></div>
+  <div id="chrome"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script src="../../_ds_bundle.js"></script>
+  <script src="data.js"></script>
+  <script type="text/babel" src="widgets.jsx"></script>
+  <script type="text/babel" src="editchrome.jsx"></script>
+  <script type="text/babel">
+    const D = window.WDLW;
+
+    /* The right column captured mid-reflow: the spotlight is growing from a
+       quarter into a half, and the ticker it displaced is sliding down + fading
+       toward the bench. Both use --dur-base / --ease-out, paused mid-flight. */
+    function ReflowColumn() {
+      return (
+        <div className="reflow-col">
+          <section className="cell cell--growing" data-screen-label="Spotlight growing">
+            <Spotlight {...D.spotlight} />
+          </section>
+          <section className="cell cell--tobench" data-screen-label="Ticker leaving">
+            <header className="cell__head"><h2 className="cell__title">Pulse</h2></header>
+            <div className="cell__body"><Ticker wins={D.wins} /></div>
+          </section>
+        </div>
+      );
+    }
+
+    function App() {
+      const clock = useWallClock();
+      return (
+        <React.Fragment>
+          <WallShell label="Mid-reflow" period="This week" clock={clock}>
+            <Cell size="half" title="Revenue" label="Revenue leaderboard">
+              <Leaderboard reps={D.reps} metric={D.metrics.revenue} size="half" />
+            </Cell>
+            <ReflowColumn />
+          </WallShell>
+
+          <EditChrome
+            modules={[{ gear: true }, { gear: true }, { gear: false }]}
+            bench={{ chips: [
+              { label: 'Ticker — wins', incoming: true },
+              { label: 'Trend — pipeline' },
+            ] }}
+          />
+        </React.Fragment>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    fitWallCanvas();
+  </script>
+</body>
+</html>

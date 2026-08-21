@@ -1,0 +1,78 @@
+/* ============================================================
+   WHOSDALEADER — TYPOGRAPHY
+   Editorial contrast: a bold characterful display against a
+   clean, legible body. Numbers get their own tabular face so
+   scores don't jitter as they tick.
+   ============================================================ */
+
+:root {
+  /* ---- Families ---- */
+  --font-display: 'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-serif;
+  --font-body:    'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+  --font-numeric: 'Space Grotesk', 'Hanken Grotesk', ui-monospace, monospace;
+
+  /* ---- Weights ---- */
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+  --weight-black:    800;
+
+  /* ---- Type scale (px-based, big & bold leaning) ---- */
+  --text-2xs:  11px;
+  --text-xs:   12px;
+  --text-sm:   14px;
+  --text-base: 16px;
+  --text-md:   18px;
+  --text-lg:   21px;
+  --text-xl:   26px;
+  --text-2xl:  32px;
+  --text-3xl:  40px;
+  --text-4xl:  52px;
+  --text-5xl:  66px;
+  --text-6xl:  84px;
+  --text-7xl:  108px;
+  --text-8xl:  140px;   /* hero scoreboard digits */
+
+  /* ---- Line heights ---- */
+  --leading-none:    1;
+  --leading-tight:   1.08;
+  --leading-snug:    1.22;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.65;
+
+  /* ---- Letter spacing ---- */
+  --tracking-tighter: -0.03em;
+  --tracking-tight:   -0.015em;
+  --tracking-normal:  0em;
+  --tracking-wide:    0.04em;
+  --tracking-wider:   0.09em;
+  --tracking-caps:    0.14em;  /* eyebrows / overlines */
+
+  /* ---- Semantic roles ---- */
+  --role-hero-size:    var(--text-7xl);
+  --role-display-size: var(--text-5xl);
+  --role-title-size:   var(--text-3xl);
+  --role-heading-size: var(--text-xl);
+  --role-body-size:    var(--text-base);
+  --role-label-size:   var(--text-sm);
+  --role-eyebrow-size: var(--text-xs);
+}
+
+/* Numeric helper — tabular, lined figures for any stat/score. */
+.wdl-num {
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Eyebrow / overline helper */
+.wdl-eyebrow {
+  font-family: var(--font-body);
+  font-weight: var(--weight-bold);
+  font-size: var(--role-eyebrow-size);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}

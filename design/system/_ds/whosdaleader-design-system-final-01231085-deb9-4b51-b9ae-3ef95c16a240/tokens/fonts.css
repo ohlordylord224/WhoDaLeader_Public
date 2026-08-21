@@ -1,0 +1,9 @@
+/* Whosdaleader webfonts.
+   Loaded from Google Fonts CDN. These are the canonical brand families:
+     - Bricolage Grotesque  -> display / headlines (characterful, bold, editorial)
+     - Hanken Grotesk       -> body / UI (clean, friendly, great numerals)
+     - Space Grotesk        -> numeric / scoreboard (tabular figures, techy)
+   If you want self-hosted .ttf/.woff2 binaries instead of the CDN, drop them in
+   /assets/fonts and replace these @import lines with @font-face rules. */
+
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');

@@ -1,0 +1,22 @@
+<!-- @dsCard group="Colors" viewport="700x160" name="Text — Paper ramp" subtitle="Lavender-whites for text on dark" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin:0; background:var(--surface-card); font-family:var(--font-body);
+         padding:24px 30px; display:flex; gap:26px; align-items:center; }
+  .item { display:flex; flex-direction:column; gap:4px; }
+  .t { font-family:var(--font-display); font-weight:800; font-size:30px; line-height:1; }
+  .tok { font-family:var(--font-numeric); font-size:11px; font-weight:600; color:var(--text-faint); }
+  .strong{color:var(--text-strong);} .bodyc{color:var(--text-body);} .muted{color:var(--text-muted);} .faint{color:var(--text-faint);}
+</style>
+</head>
+<body>
+  <div class="item"><span class="t strong">Aa</span><span class="tok">--text-strong</span></div>
+  <div class="item"><span class="t bodyc">Aa</span><span class="tok">--text-body</span></div>
+  <div class="item"><span class="t muted">Aa</span><span class="tok">--text-muted</span></div>
+  <div class="item"><span class="t faint">Aa</span><span class="tok">--text-faint</span></div>
+</body>
+</html>

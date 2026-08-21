@@ -1,0 +1,36 @@
+<!-- @dsCard group="Brand" viewport="700x230" name="Logo & wordmark" subtitle="Emblem + Whosdaleader lockup" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin:0; background:var(--surface-app); font-family:var(--font-body);
+         padding:28px 32px; display:flex; flex-direction:column; gap:22px; }
+  .lockup { display:flex; align-items:center; gap:16px; }
+  .lockup img { width:64px; height:64px; display:block; }
+  .wm { font-family:var(--font-display); font-weight:800; font-size:40px; line-height:1;
+        letter-spacing:-0.02em; color:var(--text-strong); }
+  .wm b { color:var(--brand-bright); }
+  .variants { display:flex; gap:14px; align-items:center; }
+  .chip { display:flex; align-items:center; gap:10px; padding:10px 16px; border-radius:var(--radius-pill);
+          background:var(--surface-card); border:1px solid var(--border-default); }
+  .chip.dark { background:var(--slate-980); }
+  .chip.bright { background:var(--brand); }
+  .chip img { width:30px; height:30px; }
+  .chip span { font-family:var(--font-display); font-weight:800; font-size:18px; color:var(--text-strong); }
+  .chip.bright span { color:#fff; }
+</style>
+</head>
+<body>
+  <div class="lockup">
+    <img src="../assets/emblem.svg" alt="Whosdaleader emblem">
+    <div class="wm">Whos<b>da</b>leader</div>
+  </div>
+  <div class="variants">
+    <div class="chip"><img src="../assets/emblem.svg" alt=""><span>Whosdaleader</span></div>
+    <div class="chip dark"><img src="../assets/emblem.svg" alt=""><span>Whosdaleader</span></div>
+    <div class="chip bright"><img src="../assets/emblem.svg" alt=""><span>Whosdaleader</span></div>
+  </div>
+</body>
+</html>

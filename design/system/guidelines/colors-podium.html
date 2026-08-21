@@ -1,0 +1,22 @@
+<!-- @dsCard group="Colors" viewport="700x180" name="Podium — gold / silver / bronze" subtitle="Rank 1·2·3 get dedicated metal tones" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin:0; background:var(--surface-app); font-family:var(--font-body);
+         padding:24px 30px; display:flex; gap:16px; align-items:flex-end; }
+  .sw { flex:1; border-radius:var(--radius-lg); padding:16px 18px; display:flex; flex-direction:column; gap:8px;
+        color:var(--text-on-accent); }
+  .g1{ background:var(--rank-1); height:118px;} .g2{ background:var(--rank-2); height:96px;} .g3{ background:var(--rank-3); height:78px;}
+  .rk{ font-family:var(--font-display); font-weight:800; font-size:30px; line-height:1; }
+  .tok{ font-family:var(--font-numeric); font-size:11px; font-weight:600; opacity:.8; margin-top:auto; }
+</style>
+</head>
+<body>
+  <div class="sw g1"><span class="rk">1st</span><span class="tok">--rank-1 · #ffc93d</span></div>
+  <div class="sw g2"><span class="rk">2nd</span><span class="tok">--rank-2 · #cdd6e8</span></div>
+  <div class="sw g3"><span class="rk">3rd</span><span class="tok">--rank-3 · #f0945a</span></div>
+</body>
+</html>

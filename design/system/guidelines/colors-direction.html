@@ -1,0 +1,23 @@
+<!-- @dsCard group="Colors" viewport="700x200" name="Direction — up / down / flat" subtitle="The core signal: rising, falling, holding" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin:0; background:var(--surface-app); font-family:var(--font-body);
+         padding:24px 30px; display:flex; gap:16px; }
+  .sw { flex:1; border-radius:var(--radius-lg); padding:18px 20px; display:flex; flex-direction:column;
+        justify-content:space-between; min-height:130px; color:var(--text-on-accent); }
+  .up{ background:var(--up);} .down{ background:var(--down); color:#fff;} .flat{ background:var(--flat-soft); color:var(--text-body); border:1px solid var(--border-default);}
+  .arrow{ font-size:34px; font-weight:800; line-height:1; }
+  .name{ font-family:var(--font-display); font-weight:800; font-size:21px; }
+  .tok{ font-family:var(--font-numeric); font-size:12px; opacity:.85; font-weight:600; }
+</style>
+</head>
+<body>
+  <div class="sw up"><span class="arrow">▲</span><div><div class="name">Rising</div><div class="tok">--up · #19d894</div></div></div>
+  <div class="sw down"><span class="arrow">▼</span><div><div class="name">Falling</div><div class="tok">--down · #f5365c</div></div></div>
+  <div class="sw flat"><span class="arrow">—</span><div><div class="name">Holding</div><div class="tok">--flat · #7d72a3</div></div></div>
+</body>
+</html>

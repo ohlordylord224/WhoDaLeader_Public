@@ -1,0 +1,100 @@
+<!-- @dsCard group="Components" viewport="700x600" name="Core — buttons, badges, avatars" subtitle="Buttons, icon buttons, badges, avatars, switch, card" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  body{ margin:0; background:var(--surface-app); color:var(--text-body); font-family:var(--font-body); padding:26px 30px; }
+  h4{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+      color:var(--text-faint); margin:0 0 12px; }
+  .group{ margin-bottom:26px; }
+  .row{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+  [data-lucide]{ width:20px; height:20px; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/lucide@0.456.0/dist/umd/lucide.min.js"></script>
+  <script src="../../_ds_bundle.js"></script>
+  <script type="text/babel">
+    const { Button, IconButton, Badge, Avatar, Switch, Card } = window.WhosdaleaderDesignSystem_012310;
+    const I = ({ n }) => <i data-lucide={n}></i>;
+
+    function Demo(){
+      return (
+        <div>
+          <div className="group">
+            <h4>Buttons</h4>
+            <div className="row">
+              <Button variant="primary" iconLeft={<I n="zap"/>}>Start contest</Button>
+              <Button variant="secondary">Add player</Button>
+              <Button variant="ghost">Cancel</Button>
+              <Button variant="success" iconLeft={<I n="check"/>}>Won</Button>
+              <Button variant="danger">End</Button>
+              <Button variant="gold" iconLeft={<I n="crown"/>}>Crown</Button>
+              <Button variant="primary" disabled>Disabled</Button>
+            </div>
+            <div className="row" style={{marginTop:'12px'}}>
+              <Button size="sm" variant="secondary">Small</Button>
+              <Button size="md" variant="secondary">Medium</Button>
+              <Button size="lg" variant="secondary">Large</Button>
+            </div>
+          </div>
+
+          <div className="group">
+            <h4>Icon buttons</h4>
+            <div className="row">
+              <IconButton label="Settings"><I n="settings"/></IconButton>
+              <IconButton variant="solid" label="Add"><I n="plus"/></IconButton>
+              <IconButton variant="ghost" label="More"><I n="more-horizontal"/></IconButton>
+              <IconButton round label="Refresh"><I n="refresh-cw"/></IconButton>
+            </div>
+          </div>
+
+          <div className="group">
+            <h4>Badges</h4>
+            <div className="row">
+              <Badge tone="up" dot>+12.4%</Badge>
+              <Badge tone="down" dot>−6.1%</Badge>
+              <Badge tone="gold">Top closer</Badge>
+              <Badge tone="brand">Streak ×5</Badge>
+              <Badge tone="info">North region</Badge>
+              <Badge live>LIVE</Badge>
+              <Badge tone="solid-up">Rising</Badge>
+            </div>
+          </div>
+
+          <div className="group">
+            <h4>Avatars</h4>
+            <div className="row">
+              <Avatar name="Priya Anand" ring="gold" size="lg"/>
+              <Avatar name="Marcus Bell" ring="silver" size="lg"/>
+              <Avatar name="Tom Okafor" ring="bronze" size="lg"/>
+              <Avatar name="Sara Lin"/>
+              <Avatar name="Dev Patel" size="sm"/>
+            </div>
+          </div>
+
+          <div className="group">
+            <h4>Switch &amp; Card</h4>
+            <div className="row" style={{alignItems:'stretch'}}>
+              <Card glow="gold" style={{flex:'1', minWidth:'220px'}}>
+                <div style={{display:'flex', flexDirection:'column', gap:'12px'}}>
+                  <Switch label="Show on wall display" defaultChecked/>
+                  <Switch label="Auto-rotate teams" tone="up"/>
+                </div>
+              </Card>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+    setTimeout(()=>window.lucide && window.lucide.createIcons(), 60);
+  </script>
+</body>
+</html>

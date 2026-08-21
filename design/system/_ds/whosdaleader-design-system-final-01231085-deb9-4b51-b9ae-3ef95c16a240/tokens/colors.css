@@ -1,0 +1,172 @@
+/* ============================================================
+   WHOSDALEADER — COLOR SYSTEM
+   Dark-first. NEUTRAL GREY surfaces ("Slate") with an electric
+   BLUE brand ("Azure"). Semantic up/down + podium colors are
+   first-class citizens — leaderboards live on them.
+   ============================================================ */
+
+:root {
+  /* ---- Base palette: SLATE (neutral cool-grey surfaces) ---- */
+  --slate-980: #0c0d10;
+  --slate-950: #101317;
+  --slate-900: #15191f;
+  --slate-850: #1a1f26;
+  --slate-800: #20262f;
+  --slate-750: #272e39;
+  --slate-700: #313a47;
+  --slate-650: #3c4655;
+  --slate-600: #495466;
+
+  /* ---- Base palette: PAPER (neutral text on dark) ---- */
+  --paper-0:   #ffffff;
+  --paper-50:  #f6f8fb;
+  --paper-100: #e8edf4; /* high-emphasis near-white */
+  --paper-150: #dee5ef;
+  --paper-300: #bcc5d4;
+  --paper-400: #8e99ab;
+  --paper-500: #6c7689;
+  --paper-600: #515a6b;
+
+  /* ---- Candy accent ramps (each: soft / base / bright) ---- */
+  /* AZURE — brand primary (blue) */
+  --azure-soft:   #112436;
+  --azure-300:    #7db8ff;
+  --azure-500:    #2f8bff;
+  --azure-600:    #1f6fe0;
+  --azure-bright: #6fb3ff;
+
+  /* MINT — UP / rising / positive */
+  --mint-soft:   #0e3329;
+  --mint-400:    #2fe6a6;
+  --mint-500:    #19d894;
+  --mint-bright: #5cffc1;
+
+  /* CORAL — DOWN / falling / negative */
+  --coral-soft:   #3a1622;
+  --coral-400:    #ff5d77;
+  --coral-500:    #f5365c;
+  --coral-bright: #ff8097;
+
+  /* GOLD — 1st / leader */
+  --gold-soft:   #38290a;
+  --gold-400:    #ffc93d;
+  --gold-500:    #ffb800;
+  --gold-bright: #ffe08a;
+
+  /* SILVER — 2nd */
+  --silver-soft:  #232a38;
+  --silver-300:   #cdd6e8;
+  --silver-500:   #aab6cf;
+
+  /* BRONZE — 3rd */
+  --bronze-soft:  #361f10;
+  --bronze-400:   #f0945a;
+  --bronze-500:   #d97b3f;
+
+  /* SKY — info / secondary blue (lighter cyan-blue) */
+  --sky-soft:   #102a3e;
+  --sky-400:    #46b1ff;
+  --sky-500:    #1f97f0;
+
+  /* TEAL — cool accent for charts & tags */
+  --teal-soft:  #0c2f30;
+  --teal-400:   #2dd4cf;
+  --teal-500:   #14b8b1;
+
+  /* TANGO — orange accent / streaks (warm contrast) */
+  --tango-soft:  #3a2410;
+  --tango-400:   #ff9f45;
+  --tango-500:   #ff8311;
+
+  /* ============================================================
+     SEMANTIC ALIASES — author against these, not raw ramps
+     ============================================================ */
+
+  /* Surfaces */
+  --surface-app:      var(--slate-950);
+  --surface-sunken:   var(--slate-980);
+  --surface-raised:   var(--slate-900);
+  --surface-card:     var(--slate-850);
+  --surface-card-hi:  var(--slate-800);
+  --surface-overlay:  var(--slate-800);
+  --surface-inset:    var(--slate-980);
+
+  /* Text */
+  --text-strong:  var(--paper-50);
+  --text-body:    var(--paper-150);
+  --text-muted:   var(--paper-400);
+  --text-faint:   var(--paper-500);
+  --text-on-accent: #08213d;
+
+  /* Borders & lines */
+  --border-subtle:  color-mix(in srgb, var(--paper-300) 9%, transparent);
+  --border-default: color-mix(in srgb, var(--paper-300) 16%, transparent);
+  --border-strong:  color-mix(in srgb, var(--paper-300) 28%, transparent);
+
+  /* Brand / primary */
+  --brand:          var(--azure-500);
+  --brand-hover:    var(--azure-600);
+  --brand-bright:   var(--azure-bright);
+  --brand-soft:     var(--azure-soft);
+  --on-brand:       #ffffff;
+
+  /* Direction — the heart of the system */
+  --up:        var(--mint-500);
+  --up-bright: var(--mint-bright);
+  --up-soft:   var(--mint-soft);
+  --down:        var(--coral-500);
+  --down-bright: var(--coral-bright);
+  --down-soft:   var(--coral-soft);
+  --flat:        var(--paper-500);
+  --flat-soft:   var(--slate-800);
+
+  /* Podium */
+  --rank-1:      var(--gold-400);
+  --rank-1-soft: var(--gold-soft);
+  --rank-2:      var(--silver-300);
+  --rank-2-soft: var(--silver-soft);
+  --rank-3:      var(--bronze-400);
+  --rank-3-soft: var(--bronze-soft);
+
+  /* Status */
+  --success: var(--mint-500);
+  --danger:  var(--coral-500);
+  --warning: var(--tango-400);
+  --info:    var(--sky-400);
+
+  /* Focus ring */
+  --focus-ring: var(--azure-bright);
+}
+
+/* ============================================================
+   LIGHT THEME — opt-in via [data-theme="light"].
+   Dark is the default (wall-display friendly); light is provided
+   for office desktop use. Accent ramps stay identical; only
+   surfaces/text/borders flip.
+   ============================================================ */
+[data-theme="light"] {
+  --surface-app:      #eef1f6;
+  --surface-sunken:   #e4e8ef;
+  --surface-raised:   #ffffff;
+  --surface-card:     #ffffff;
+  --surface-card-hi:  #f4f6fa;
+  --surface-overlay:  #ffffff;
+  --surface-inset:    #eaeef4;
+
+  --text-strong:  #111722;
+  --text-body:    #28303d;
+  --text-muted:   #5d6878;
+  --text-faint:   #889; /* fallback */
+  --text-faint:   #8a93a3;
+  --on-brand:     #ffffff;
+
+  --border-subtle:  color-mix(in srgb, #0c1422 8%, transparent);
+  --border-default: color-mix(in srgb, #0c1422 14%, transparent);
+  --border-strong:  color-mix(in srgb, #0c1422 24%, transparent);
+
+  --brand-soft:  #e3effb;
+  --up-soft:     #d8f9ec;
+  --down-soft:   #ffe1e7;
+  --rank-1-soft: #fff1cc;
+  --flat-soft:   #e8ecf2;
+}

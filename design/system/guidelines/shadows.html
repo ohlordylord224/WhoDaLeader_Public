@@ -1,0 +1,25 @@
+<!-- @dsCard group="Spacing" viewport="700x210" name="Elevation & glows" subtitle="Soft dark shadows; colored glows for emphasis" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin:0; background:var(--surface-app); font-family:var(--font-body);
+         padding:30px; display:flex; gap:22px; align-items:center; flex-wrap:wrap; }
+  .item { display:flex; flex-direction:column; gap:10px; align-items:center; }
+  .box { width:96px; height:64px; border-radius:var(--radius-lg); background:var(--surface-card); }
+  .tok { font-family:var(--font-numeric); font-size:11px; font-weight:600; color:var(--text-muted); }
+  .s1{box-shadow:var(--shadow-sm);} .s2{box-shadow:var(--shadow-card);} .s3{box-shadow:var(--shadow-pop);}
+  .g1{box-shadow:var(--glow-gold);} .g2{box-shadow:var(--glow-up);} .g3{box-shadow:var(--glow-brand);}
+</style>
+</head>
+<body>
+  <div class="item"><div class="box s1"></div><span class="tok">shadow-sm</span></div>
+  <div class="item"><div class="box s2"></div><span class="tok">shadow-card</span></div>
+  <div class="item"><div class="box s3"></div><span class="tok">shadow-pop</span></div>
+  <div class="item"><div class="box g1"></div><span class="tok">glow-gold</span></div>
+  <div class="item"><div class="box g2"></div><span class="tok">glow-up</span></div>
+  <div class="item"><div class="box g3"></div><span class="tok">glow-brand</span></div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+[Unit]
+Description=Whosdaleader leaderboard server
+Documentation=https://github.com/ohlordylord224/Whodaleader
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/whodaleader
+
+# Load .env for HUBSPOT_TOKEN, DB_PATH, BIND_HOST, POLL_INTERVAL_MS, etc.
+# Never put secrets in this service file — keep them in .env (chmod 600).
+EnvironmentFile=/home/pi/whodaleader/.env
+
+# NITRO_HOST: Nitro reads this to decide which address to bind.
+# We derive it from BIND_HOST (set in .env) so the service file itself has
+# no hardcoded host — a single .env change covers both the app and the server.
+# Default 0.0.0.0 makes the board reachable on the LAN (settings panel,
+# second-screen viewing). Change .env BIND_HOST=127.0.0.1 for pure kiosk.
+ExecStart=/bin/sh -c 'NITRO_HOST="${BIND_HOST:-0.0.0.0}" NITRO_PORT="${PORT:-3000}" exec node .output/server/index.mjs'
+
+# Restart immediately on crash; wait 5s before each attempt.
+Restart=always
+RestartSec=5
+
+# Give the process enough time to finish an in-flight HubSpot request on stop.
+TimeoutStopSec=10
+
+# Log to the system journal — view with: journalctl -u whodaleader -f
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=whodaleader
+
+[Install]
+WantedBy=multi-user.target
